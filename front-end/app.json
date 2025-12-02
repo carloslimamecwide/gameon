@@ -1,0 +1,79 @@
+{
+  "expo": {
+    "name": "FootMatch",
+    "slug": "footmatch",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "footmatch",
+    "userInterfaceStyle": "automatic",
+    "linking": {
+      "prefixes": ["footmatch://"],
+      "config": {
+        "screens": {
+          "reset-password": "reset-password"
+        }
+      }
+    },
+    "newArchEnabled": true,
+    "platforms": ["ios", "android", "web"],
+    "description": "Organize os seus jogos de futebol com amigos",
+    "keywords": ["football", "soccer", "games", "teams", "expo", "react-native"],
+    "ios": {
+      "supportsTablet": true,
+      "statusBarStyle": "auto",
+      "bundleIdentifier": "com.carloslimamecwide.footmatch",
+      "buildNumber": "1"
+    },
+    "android": {
+      "statusBarStyle": "auto",
+      "package": "com.carloslimamecwide.footmatch",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#2E7D32",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "softwareKeyboardLayoutMode": "pan"
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#2E7D32",
+          "dark": {
+            "backgroundColor": "#1B5E20"
+          }
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Permitir que o $(PRODUCT_NAME) use sua localização para encontrar campos próximos.",
+          "locationWhenInUsePermission": "Permitir que o $(PRODUCT_NAME) use sua localização para encontrar campos próximos."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "80c201e6-461d-4ca5-a0b5-2767dd123f10"
+      }
+    },
+    "owner": "carloslimamecwide"
+  }
+}

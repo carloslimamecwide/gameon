@@ -1,0 +1,17 @@
+{
+  "servers": {
+    "expo-server": {
+      "url": "https://mcp.expo.dev/mcp",
+      "type": "http"
+    }
+  },
+  "inputs": [
+    { "name": "expo_router_sitemap", "type": "local" },
+    { "name": "open_devtools", "type": "local" },
+    { "name": "automation_tap", "type": "local" },
+    { "name": "automation_take_screenshot", "type": "local" },
+    { "name": "automation_find_view_by_testid", "type": "local" },
+    { "name": "automation_tap_by_testid", "type": "local" },
+    { "name": "automation_take_screenshot_by_testid", "type": "local" }
+  ]
+}
