@@ -7,6 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "footmatch",
     "userInterfaceStyle": "automatic",
+    "backgroundColor": "#A5D6A7",
     "linking": {
       "prefixes": ["footmatch://"],
       "config": {

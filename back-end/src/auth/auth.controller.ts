@@ -130,7 +130,7 @@ export class AuthController {
           }
           body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #4CAF50;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -233,7 +233,7 @@ export class AuthController {
           }
           body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: #4CAF50;
             min-height: 100vh;
             display: flex;
             align-items: center;

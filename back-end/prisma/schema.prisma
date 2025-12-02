@@ -3,8 +3,70 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+  id                     Int                  @id @default(autoincrement())
+  email                  String               @unique
+  password               String
+  name                   String?
+  role                   Role                 @default(USER)
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
+  teamId                 Int?
+  emailVerificationToken String?
+  emailVerified          Boolean              @default(false)
+  phone                  String?
+  gamesAsPlayer          GamePlayers[]
+  passwordResets         PasswordResetToken[]
+  createdTeams           Team[]               @relation("TeamCreator")
+  team                   Team?                @relation(fields: [teamId], references: [id])
+}
+
+model Team {
+  id           Int      @id @default(autoincrement())
+  name         String
+  creatorId    Int
+  createdAt    DateTime @default(now())
+  gamesAsTeamA Game[]   @relation("teamA")
+  gamesAsTeamB Game[]   @relation("teamB")
+  creator      User     @relation("TeamCreator", fields: [creatorId], references: [id])
+  members      User[]
+}
+
+model Game {
+  id           Int           @id @default(autoincrement())
+  date         DateTime
+  location     String?
+  teamAId      Int
+  teamBId      Int
+  createdAt    DateTime      @default(now())
+  bestPlayerId Int?
+  teamA        Team          @relation("teamA", fields: [teamAId], references: [id])
+  teamB        Team          @relation("teamB", fields: [teamBId], references: [id])
+  players      GamePlayers[]
+}
+
+model GamePlayers {
+  id     Int  @id @default(autoincrement())
+  gameId Int
+  userId Int
+  rating Int?
+  game   Game @relation(fields: [gameId], references: [id])
+  user   User @relation(fields: [userId], references: [id])
+}
+
+model PasswordResetToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 enum Role {
@@ -12,64 +74,4 @@ enum Role {
   CAPTAIN
   COMPANY_ADMIN
   ADMIN
-}
-
-model User {
-  id               Int       @id @default(autoincrement())
-  email            String    @unique
-  password         String
-  name             String?
-  role             Role      @default(USER)
-  emailVerified    Boolean   @default(false)
-  emailVerificationToken String?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  teamId           Int?
-  team             Team?     @relation(fields: [teamId], references: [id])
-  gamesAsPlayer    GamePlayers[]
-  passwordResets   PasswordResetToken[]
-  createdTeams     Team[]    @relation("TeamCreator")
-}
-
-model Team {
-  id        Int      @id @default(autoincrement())
-  name      String
-  creatorId Int
-  creator   User     @relation("TeamCreator", fields: [creatorId], references: [id])
-  members   User[]
-  createdAt DateTime @default(now())
-  gamesAsTeamA Game[] @relation("teamA")
-  gamesAsTeamB Game[] @relation("teamB")
-}
-
-model Game {
-  id          Int      @id @default(autoincrement())
-  date        DateTime
-  location    String?
-  teamAId     Int
-  teamBId     Int
-  teamA       Team     @relation("teamA", fields: [teamAId], references: [id])
-  teamB       Team     @relation("teamB", fields: [teamBId], references: [id])
-  createdAt   DateTime @default(now())
-  players     GamePlayers[]
-  bestPlayerId Int?
-}
-
-model GamePlayers {
-  id       Int   @id @default(autoincrement())
-  gameId   Int
-  game     Game  @relation(fields: [gameId], references: [id])
-  userId   Int
-  user     User  @relation(fields: [userId], references: [id])
-  rating   Int?  // rating given to player (optional)
-}
-
-model PasswordResetToken {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
-  token     String
-  expiresAt DateTime
-  used      Boolean  @default(false)
-  createdAt DateTime @default(now())
 }

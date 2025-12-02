@@ -36,6 +36,14 @@ export class UpdateUserDto {
   name?: string;
 
   @ApiPropertyOptional({
+    description: 'Número de telefone do utilizador',
+    example: '+351912345678',
+  })
+  @IsOptional()
+  @IsString({ message: 'Telefone deve ser texto' })
+  phone?: string;
+
+  @ApiPropertyOptional({
     description: 'Nova password (apenas para o próprio utilizador)',
     example: 'NovaPassword123!',
     minLength: 8,

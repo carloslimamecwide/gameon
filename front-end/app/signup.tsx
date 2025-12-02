@@ -160,7 +160,7 @@ export default function SignUpScreen() {
 
   return (
     <>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.container}>
         <View style={styles.content}>
           {/* Header */}
           <View style={styles.header}>
@@ -334,9 +334,13 @@ export default function SignUpScreen() {
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+    backgroundColor: Colors.primary,
+  },
   container: {
     flexGrow: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.primary,
   },
   content: {
     flex: 1,
@@ -350,20 +354,25 @@ const styles = StyleSheet.create({
   },
   appTitle: {
     ...Typography.h1,
-    color: Colors.primary,
-    fontWeight: "bold",
+    color: Colors.textOnPrimary,
     marginBottom: Spacing.sm,
   },
   appSubtitle: {
     ...Typography.body,
-    color: Colors.textSecondary,
+    color: Colors.textOnPrimary,
     textAlign: "center",
+    opacity: 0.9,
   },
   form: {
-    backgroundColor: Colors.surface,
-    borderRadius: 12,
-    padding: Spacing.md,
+    backgroundColor: "white",
+    borderRadius: 16,
+    padding: Spacing.lg,
     marginBottom: Spacing.md,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 8,
   },
   formTitle: {
     ...Typography.h3,
@@ -435,14 +444,15 @@ const styles = StyleSheet.create({
   },
   termsText: {
     ...Typography.caption,
-    color: Colors.textSecondary,
+    color: Colors.textOnPrimary,
     textAlign: "center",
     marginBottom: Spacing.md,
-    lineHeight: 16,
+    opacity: 0.8,
   },
   termsLink: {
-    color: Colors.primary,
-    fontWeight: "600",
+    color: Colors.textOnPrimary,
+    fontWeight: "700" as const,
+    textDecorationLine: "underline" as const,
   },
   divider: {
     flexDirection: "row",
@@ -456,8 +466,9 @@ const styles = StyleSheet.create({
   },
   dividerText: {
     ...Typography.caption,
-    color: Colors.textSecondary,
+    color: Colors.textOnPrimary,
     marginHorizontal: Spacing.sm,
+    opacity: 0.8,
   },
   signInContainer: {
     flexDirection: "row",
@@ -466,12 +477,14 @@ const styles = StyleSheet.create({
   },
   signInText: {
     ...Typography.body,
-    color: Colors.textSecondary,
+    color: Colors.textOnPrimary,
+    opacity: 0.9,
   },
   signInLink: {
     ...Typography.body,
-    color: Colors.primary,
-    fontWeight: "600",
+    color: Colors.textOnPrimary,
+    fontWeight: "700" as const,
+    textDecorationLine: "underline" as const,
   },
   errorContainer: {
     marginBottom: 8,

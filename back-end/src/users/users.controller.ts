@@ -123,6 +123,44 @@ export class UsersController {
     return this.users.findOne(Number(id));
   }
 
+  @Put('profile')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Atualizar próprio perfil',
+    description:
+      'Permite ao utilizador autenticado atualizar seu próprio perfil',
+  })
+  @ApiBody({
+    type: UpdateUserDto,
+    description: 'Dados para atualização do perfil (name, email, password)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Perfil atualizado com sucesso',
+    schema: {
+      example: {
+        id: 1,
+        email: 'carlos@example.com',
+        name: 'Carlos Lima Silva',
+        role: 'USER',
+        emailVerified: true,
+        createdAt: '2025-11-02T18:00:00.000Z',
+        updatedAt: '2025-11-02T19:00:00.000Z',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Dados inválidos ou email já em uso',
+  })
+  @ApiResponse({ status: 401, description: 'Não autorizado - token inválido' })
+  updateProfile(
+    @Body() updateUserDto: UpdateUserDto,
+    @CurrentUser() user: any,
+  ) {
+    return this.users.update(user.userId, updateUserDto, user);
+  }
+
   @Put(':id')
   @ApiOperation({
     summary: 'Atualizar utilizador',

@@ -73,8 +73,14 @@ export class UsersService {
     // Preparar dados para atualização
     const updateData: any = {};
 
+    console.log('📝 UpdateUserDto recebido:', updateUserDto);
+
     if (updateUserDto.email) updateData.email = updateUserDto.email;
     if (updateUserDto.name) updateData.name = updateUserDto.name;
+    if (updateUserDto.phone !== undefined)
+      updateData.phone = updateUserDto.phone;
+
+    console.log('💾 Dados para atualizar:', updateData);
 
     // Apenas o próprio utilizador pode alterar a password
     if (updateUserDto.password) {
@@ -104,11 +110,14 @@ export class UsersService {
         id: true,
         email: true,
         name: true,
+        phone: true,
         role: true,
         createdAt: true,
         updatedAt: true,
       },
     });
+
+    console.log('✅ Utilizador atualizado:', updatedUser);
 
     return updatedUser;
   }

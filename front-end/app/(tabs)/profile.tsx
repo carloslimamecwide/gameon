@@ -1,14 +1,28 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert, Platform } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuth } from "../../contexts/auth-context";
 import { Colors, Spacing, Typography } from "../../constants/theme";
+import GenericModal from "../../components/GenericModal";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { API_BASE_URL } from "../../constants/api";
+import { handleApiError } from "../../utils/apiErrorHandler";
 
 export default function ProfileScreen() {
-  const { user, clearAuth } = useAuth();
+  const { user, clearAuth, saveAuth } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(user?.name || "");
-  const [editedPhone, setEditedPhone] = useState("");
+  const [editedPhone, setEditedPhone] = useState(user?.phone || "");
+  const [isLoading, setIsLoading] = useState(false);
+  console.log("Rendering ProfileScreen for user:", JSON.stringify(user));
+  // Modal states
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalTitle, setModalTitle] = useState<string | undefined>(undefined);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalOnConfirm, setModalOnConfirm] = useState<(() => void) | undefined>(undefined);
+  const [modalCancelText, setModalCancelText] = useState<string | undefined>(undefined);
+
   const insets = useSafeAreaInsets();
 
   // Calcular padding inferior para permitir scroll completo
@@ -17,16 +31,77 @@ export default function ProfileScreen() {
       ? Math.max(insets.bottom + 120, 140) // Mais espaço para iOS garantir visibilidade do botão
       : Math.max(insets.bottom + 80, 90);
 
-  const handleSaveProfile = () => {
-    setIsEditing(false);
-    Alert.alert("Sucesso", "Perfil atualizado com sucesso!");
+  const showModal = (message: string, title?: string, onConfirm?: () => void, cancelText?: string) => {
+    setModalTitle(title);
+    setModalMessage(message);
+    setModalOnConfirm(() => onConfirm);
+    setModalCancelText(cancelText);
+    setModalVisible(true);
   };
 
-  const handleSignOut = async () => {
-    Alert.alert("Sair", "Tem certeza que deseja sair da sua conta?", [
-      { text: "Cancelar", style: "cancel" },
-      { text: "Sair", style: "destructive", onPress: clearAuth },
-    ]);
+  const handleSaveProfile = async () => {
+    if (!editedName.trim()) {
+      showModal("Por favor, digite o seu nome", "Erro");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const accessToken = await AsyncStorage.getItem("access_token");
+      const refreshToken = await AsyncStorage.getItem("refresh_token");
+
+      if (!accessToken) {
+        showModal("Sessão expirada. Faça login novamente.", "Erro");
+        return;
+      }
+
+      const response = await axios.put(
+        `${API_BASE_URL}/users/profile`,
+        {
+          name: editedName.trim(),
+          phone: editedPhone.trim() || undefined,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      // Atualizar contexto com novo nome e telefone
+      if (user) {
+        await saveAuth(
+          {
+            ...user,
+            name: editedName.trim(),
+            phone: editedPhone.trim() || undefined,
+          },
+          accessToken,
+          refreshToken || ""
+        );
+      }
+
+      setIsEditing(false);
+      showModal("Perfil atualizado com sucesso!", "Sucesso");
+    } catch (error: any) {
+      const apiMsg = handleApiError(error, "Erro ao atualizar perfil. Tente novamente.");
+      showModal(apiMsg, "Erro");
+      console.error("Erro ao atualizar perfil:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSignOut = () => {
+    showModal(
+      "Tem certeza que deseja sair da sua conta?",
+      "Sair",
+      () => {
+        setModalVisible(false);
+        clearAuth();
+      },
+      "Cancelar"
+    );
   };
 
   const stats = [
@@ -162,6 +237,19 @@ export default function ProfileScreen() {
           <Text style={styles.signOutText}>Sair da Conta</Text>
         </TouchableOpacity>
       </View>
+
+      <GenericModal
+        visible={modalVisible}
+        title={modalTitle}
+        message={modalMessage}
+        onClose={() => {
+          setModalVisible(false);
+          setModalOnConfirm(undefined);
+          setModalCancelText(undefined);
+        }}
+        onConfirm={modalOnConfirm}
+        cancelText={modalCancelText}
+      />
     </ScrollView>
   );
 }
