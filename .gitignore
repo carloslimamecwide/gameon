@@ -1,0 +1,39 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Sensitive files
+*.pem
+*.key
+*.cert
+*.crt
+*secret*
+*password*
+!*password*.dto.ts
+!*password*.guard.ts
+!*password*.service.ts
+!reset-password.tsx
+!forgot-password.dto.ts
+!reset-password.dto.ts
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
